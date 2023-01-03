@@ -1,0 +1,59 @@
+# course config files
+*.yaml
+
+# gradle
+.gradle/
+gradle/
+gradlew
+*.bat
+build
+
+
+# idea confid
+.idea
+
+# old stages
+/Simple Search Engine/*
+!/Simple Search Engine/task/
+/Simple Search Engine/task/*
+!/Simple Search Engine/task/src/
+!/Simple Search Engine/task/build.gradle
+!/Simple Search Engine/task/build.gradle.kts
+
+# Project exclude paths
+/Topics/Call stack/Follow the call stack/out/
+/Topics/Call stack/Follow the call stack/out/production/classes/
+/Topics/Debugging techniques/Find the error/out/
+/Topics/Debugging techniques/Find the error/out/production/classes/
+/Topics/Enum/Days of the week/out/
+/Topics/Enum/Days of the week/out/production/classes/
+/Topics/Enum/Rainbow colors/out/
+/Topics/Enum/Rainbow colors/out/production/classes/
+/Topics/For loop and ranges/The longest sequence/out/
+/Topics/For loop and ranges/The longest sequence/out/production/classes/
+/Topics/Getting substrings/Exchange/out/
+/Topics/Getting substrings/Exchange/out/production/classes/
+/Topics/If expression/Queens/out/
+/Topics/If expression/Queens/out/production/classes/
+/Topics/Invoking functions/Lembas/out/
+/Topics/Invoking functions/Lembas/out/production/classes/
+/Topics/Jumps and returns/Beyond the word/out/
+/Topics/Jumps and returns/Beyond the word/out/production/classes/
+/Topics/Linear search/How many repetitions/out/
+/Topics/Linear search/How many repetitions/out/production/classes/
+/Topics/Mutable List/Mutable List/out/
+/Topics/Mutable List/Mutable List/out/production/classes/
+/Topics/Nested and inner classes/Clothing problem/out/
+/Topics/Nested and inner classes/Clothing problem/out/production/classes/
+/Topics/Nested and inner classes/Your vehicle/out/
+/Topics/Nested and inner classes/Your vehicle/out/production/classes/
+/Topics/Object declarations/Me/out/
+/Topics/Object declarations/Me/out/production/classes/
+/Topics/Processing strings/Generating passwords/out/
+/Topics/Processing strings/Generating passwords/out/production/classes/
+/Topics/Processing strings/Lucky number/out/
+/Topics/Processing strings/Lucky number/out/production/classes/
+/Topics/Scopes/Cyclist/out/
+/Topics/Scopes/Cyclist/out/production/classes/
+/Topics/The main() function/Using arguments/out/
+/Topics/The main() function/Using arguments/out/production/classes/
