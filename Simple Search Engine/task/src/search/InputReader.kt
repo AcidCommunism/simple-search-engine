@@ -1,11 +1,14 @@
 package search
 
 import java.io.File
+import java.nio.file.Paths
 
 class InputReader {
 
     fun getInputSets(filePath: String): MutableList<Set<String>> {
         val inputSets = mutableListOf<Set<String>>()
+        val path = Paths.get("").toAbsolutePath().toString()
+        println(path)
         File(filePath).forEachLine { inputSets.add(it.split(" ").toSet()) }
         return inputSets
     }
