@@ -9,9 +9,14 @@ fun main(args: Array<String>) {
         when (readln()) {
             "1" -> {
                 println("\nSelect a matching strategy: ${SearchStrategy.values().joinToString()}")
-                val strategy = SearchStrategy.valueOf(readln())
-                println("\nEnter data to search compositions:")
-                SearchEngine().printMatchingItems(readln(), inputSets, invertedIndexMap, strategy)
+                var strategy: SearchStrategy
+                runCatching { SearchStrategy.valueOf(readln()) }
+                    .onSuccess {
+                        strategy = it
+                        println("\nEnter data to search compositions:")
+                        SearchEngine().printMatchingItems(readln(), inputSets, invertedIndexMap, strategy)
+                    }
+                    .onFailure { println("Incorrect strategy provided $it") }
             }
 
             "2" -> {

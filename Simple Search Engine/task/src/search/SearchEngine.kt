@@ -56,18 +56,25 @@ class SearchEngine {
             }
 
             SearchStrategy.ALL -> printMatchingItems(dataSets) {
-                val matchingIndexes = mutableSetOf<Int>()
+                var matchingIndexes = mutableSetOf<Int>()
                 query
                     .split(" ")
                     .filter { word -> word.isNotBlank() }
-                    .forEach {
-                        runCatching { invertedIndexMap.getValue(it.lowercase()) }
-                            .onSuccess {
-                                if (matchingIndexes.isEmpty())
-                                    matchingIndexes.addAll(it)
-                                else
-                                    it.forEach { matchingIndexes.filter { index -> index == it } }
-                            }
+                    .run iterativeSearch@ {
+                        this.forEach {
+                            runCatching { invertedIndexMap.getValue(it.lowercase()) }
+                                .onSuccess {
+                                    if (matchingIndexes.size == 0)
+                                        matchingIndexes.addAll(it)
+                                    else
+                                        matchingIndexes = matchingIndexes.intersect(it).toMutableSet()
+                                    if (matchingIndexes.size == 0) return@iterativeSearch
+                                }
+                                .onFailure {
+                                    matchingIndexes.clear()
+                                    return@iterativeSearch
+                                }
+                        }
                     }
                     .run { matchingIndexes }
             }
