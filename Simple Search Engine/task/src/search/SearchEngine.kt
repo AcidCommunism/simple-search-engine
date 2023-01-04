@@ -60,7 +60,7 @@ class SearchEngine {
                 query
                     .split(" ")
                     .filter { word -> word.isNotBlank() }
-                    .run iterativeSearch@ {
+                    .run iterativeIntersectionSearch@{
                         this.forEach {
                             runCatching { invertedIndexMap.getValue(it.lowercase()) }
                                 .onSuccess {
@@ -68,11 +68,11 @@ class SearchEngine {
                                         matchingIndexes.addAll(it)
                                     else
                                         matchingIndexes = matchingIndexes.intersect(it).toMutableSet()
-                                    if (matchingIndexes.size == 0) return@iterativeSearch
+                                    if (matchingIndexes.size == 0) return@iterativeIntersectionSearch
                                 }
                                 .onFailure {
                                     matchingIndexes.clear()
-                                    return@iterativeSearch
+                                    return@iterativeIntersectionSearch
                                 }
                         }
                     }
@@ -103,6 +103,8 @@ class SearchEngine {
     }
 }
 
-enum class SearchStrategy {
-    ALL, ANY, NONE
+enum class SearchStrategy(val description: String) {
+    ALL("Find results containing all search query words"),
+    ANY("Find results containing any word from search query"),
+    NONE("Find results containing NONE of the search query words")
 }

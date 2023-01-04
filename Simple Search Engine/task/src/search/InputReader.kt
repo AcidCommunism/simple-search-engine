@@ -19,8 +19,10 @@ class InputReader {
                 .split(" ")
                 .filter { i -> i.isNotBlank() }
                 .forEach { word ->
-                    if (map.containsKey(word.lowercase())) map[word.lowercase()]!! += currentLine
-                    else map[word.lowercase()] = mutableSetOf(currentLine)
+                    if (map.containsKey(word.lowercase()))
+                        map[word.lowercase()]!! += currentLine
+                    else
+                        map[word.lowercase()] = mutableSetOf(currentLine)
                 }
             currentLine++
         }
