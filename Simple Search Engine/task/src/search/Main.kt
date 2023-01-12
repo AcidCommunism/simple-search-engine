@@ -27,6 +27,7 @@ fun main(args: Array<String>) {
 
             "2" -> {
                 println("\n=== List of compositions ===")
+                println("Total of ${inputSets.size} compositions")
                 inputSets.forEach { println(it.joinToString(" ")) }
             }
 

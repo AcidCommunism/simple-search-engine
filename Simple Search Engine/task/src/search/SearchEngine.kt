@@ -1,5 +1,7 @@
 package search
 
+import kotlin.system.measureTimeMillis
+
 class SearchEngine {
     fun printMatchingItems(
         query: String,
@@ -42,64 +44,68 @@ class SearchEngine {
         invertedIndexMap: Map<String, Set<Int>>,
         strategy: SearchStrategy
     ) {
-        when (strategy) {
-            SearchStrategy.ANY -> printMatchingItems(dataSets) {
-                val matchingIndexes = mutableSetOf<Int>()
-                query
-                    .split(" ")
-                    .filter { word -> word.isNotBlank() }
-                    .forEach {
-                        runCatching { invertedIndexMap.getValue(it.lowercase()) }
-                            .onSuccess { matchingIndexes.addAll(it) }
-                    }
-                    .run { matchingIndexes }
-            }
+        val perf = measureTimeMillis {
+            when (strategy) {
+                SearchStrategy.ANY -> printMatchingItems(dataSets) {
+                    val matchingIndexes = mutableSetOf<Int>()
+                    query
+                        .split(" ")
+                        .filter { word -> word.isNotBlank() }
+                        .forEach {
+                            runCatching { invertedIndexMap.getValue(it.lowercase()) }
+                                .onSuccess { matchingIndexes.addAll(it) }
+                        }
+                        .run { matchingIndexes }
+                }
 
-            SearchStrategy.ALL -> printMatchingItems(dataSets) {
-                var matchingIndexes = mutableSetOf<Int>()
-                query
-                    .split(" ")
-                    .filter { word -> word.isNotBlank() }
-                    .run iterativeIntersectionSearch@{
-                        this.forEach {
+                SearchStrategy.ALL -> printMatchingItems(dataSets) {
+                    var matchingIndexes = mutableSetOf<Int>()
+                    query
+                        .split(" ")
+                        .filter { word -> word.isNotBlank() }
+                        .run iterativeIntersectionSearch@{
+                            this.forEach {
+                                runCatching { invertedIndexMap.getValue(it.lowercase()) }
+                                    .onSuccess {
+                                        if (matchingIndexes.size == 0)
+                                            matchingIndexes.addAll(it)
+                                        else
+                                            matchingIndexes = matchingIndexes.intersect(it).toMutableSet()
+                                        if (matchingIndexes.size == 0) return@iterativeIntersectionSearch
+                                    }
+                                    .onFailure {
+                                        matchingIndexes.clear()
+                                        return@iterativeIntersectionSearch
+                                    }
+                            }
+                        }
+                        .run { matchingIndexes }
+                }
+
+                SearchStrategy.NONE -> printMatchingItems(dataSets) {
+                    val matchingIndexes = mutableSetOf<Int>()
+                    val nonInclusiveIndexes = mutableSetOf<Int>()
+                    query
+                        .split(" ")
+                        .filter { word -> word.isNotBlank() }
+                        .forEach {
                             runCatching { invertedIndexMap.getValue(it.lowercase()) }
                                 .onSuccess {
-                                    if (matchingIndexes.size == 0)
-                                        matchingIndexes.addAll(it)
-                                    else
-                                        matchingIndexes = matchingIndexes.intersect(it).toMutableSet()
-                                    if (matchingIndexes.size == 0) return@iterativeIntersectionSearch
-                                }
-                                .onFailure {
-                                    matchingIndexes.clear()
-                                    return@iterativeIntersectionSearch
+                                    nonInclusiveIndexes.addAll(it)
                                 }
                         }
-                    }
-                    .run { matchingIndexes }
-            }
+                        .run {
+                            matchingIndexes.addAll(
+                                dataSets.indices.filter { i -> !nonInclusiveIndexes.contains(i) }
+                            )
+                        }
+                        .run { matchingIndexes }
+                }
 
-            SearchStrategy.NONE -> printMatchingItems(dataSets) {
-                val matchingIndexes = mutableSetOf<Int>()
-                val nonInclusiveIndexes = mutableSetOf<Int>()
-                query
-                    .split(" ")
-                    .filter { word -> word.isNotBlank() }
-                    .forEach {
-                        runCatching { invertedIndexMap.getValue(it.lowercase()) }
-                            .onSuccess {
-                                nonInclusiveIndexes.addAll(it)
-                            }
-                    }
-                    .run {
-                        matchingIndexes.addAll(
-                            dataSets.indices.filter { i -> !nonInclusiveIndexes.contains(i) }
-                        )
-                    }
-                    .run { matchingIndexes }
             }
-
         }
+        println("\nSearch executed in $perf ms")
+        println("Search query: \"$query\", strategy: $strategy")
     }
 }
 
