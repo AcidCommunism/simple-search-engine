@@ -15,7 +15,7 @@ fun main(args: Array<String>) {
                     .onSuccess {
                         strategy = it
                         println("\nEnter data to search compositions:")
-                        SearchEngine().printMatchingItems(
+                        SearchEngine().printSearchResults(
                             query = readln(),
                             dataSets = inputSets,
                             invertedIndexMap = invertedIndexMap,
