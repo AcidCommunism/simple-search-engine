@@ -24,23 +24,11 @@ class SearchEngine {
     ) {
         val perf = measureTimeMillis {
             when (strategy) {
-                SearchStrategy.ANY -> printAnyMatches(
-                    query = query,
-                    dataSets = dataSets,
-                    invertedIndexMap = invertedIndexMap
-                )
+                SearchStrategy.ANY -> printAnyMatches(query, dataSets, invertedIndexMap)
 
-                SearchStrategy.ALL -> printIntersectionMatches(
-                    query = query,
-                    dataSets = dataSets,
-                    invertedIndexMap = invertedIndexMap
-                )
+                SearchStrategy.ALL -> printIntersectionMatches(query, dataSets, invertedIndexMap)
 
-                SearchStrategy.NONE -> printNonInclusiveMatches(
-                    query = query,
-                    dataSets = dataSets,
-                    invertedIndexMap = invertedIndexMap
-                )
+                SearchStrategy.NONE -> printNonInclusiveMatches(query, dataSets, invertedIndexMap)
             }
         }
         println("\nSearch executed in $perf ms")
